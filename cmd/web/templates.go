@@ -34,7 +34,7 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 
-		ts, err := template.ParseFiles("./ui/html/base.html")
+		ts, err := template.New(name).Funcs(functions).ParseFiles("./ui/html/base.html")
 		if err != nil {
 			return nil, err
 		}
@@ -53,4 +53,14 @@ func newTemplateCache() (map[string]*template.Template, error) {
 	}
 
 	return cache, nil
+}
+
+// "V-Table" for custom templates functions
+var functions = template.FuncMap{
+	"humanDate": humanDate,
+}
+
+// Returns a nicely formatted string representation of time.Time object
+func humanDate(t *time.Time) string {
+	return t.Format("02 Jan 2006 at 3:04pm")
 }
