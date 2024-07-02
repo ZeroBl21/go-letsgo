@@ -2,15 +2,25 @@ package main
 
 import (
 	"html/template"
+	"net/http"
 	"path/filepath"
+	"time"
 
 	"github.com/ZeroBl21/go-letsgo/internal/models"
 )
 
 // Holds the structure for any dynamicfor HTML template
 type templateData struct {
+	CurrentYear int
+
 	Snippet  *models.Snippet
 	Snippets []*models.Snippet
+}
+
+func (app *application) newTemplateData(_ *http.Request) *templateData {
+	return &templateData{
+		CurrentYear: time.Now().Year(),
+	}
 }
 
 func newTemplateCache() (map[string]*template.Template, error) {
