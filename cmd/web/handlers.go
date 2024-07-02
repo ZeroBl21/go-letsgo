@@ -17,27 +17,27 @@ func (app *application) home(w http.ResponseWriter, _ *http.Request) {
 		return
 	}
 
-	for _, s := range snippets {
-		fmt.Fprintf(w, "%+v\n", s)
+	files := []string{
+		"./ui/html/base.html",
+		"./ui/html/pages/home.html",
+
+		// Partials
+		"./ui/html/partials/nav.html",
 	}
 
-	// files := []string{
-	// 	"./ui/html/base.html",
-	// 	"./ui/html/pages/home.html",
-	//
-	// 	// Partials
-	// 	"./ui/html/partials/nav.html",
-	// }
-	//
-	// ts, err := template.ParseFiles(files...)
-	// if err != nil {
-	// 	app.serverError(w, err)
-	// 	return
-	// }
-	//
-	// if err := ts.ExecuteTemplate(w, "base", nil); err != nil {
-	// 	app.serverError(w, err)
-	// }
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.serverError(w, err)
+		return
+	}
+
+	data := &templateData{
+		Snippets: snippets,
+	}
+
+	if err := ts.ExecuteTemplate(w, "base", data); err != nil {
+		app.serverError(w, err)
+	}
 
 }
 
