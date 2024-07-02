@@ -1,15 +1,17 @@
 {{define "title"}}Snippet #{{.Snippet.ID}}{{end}}
 
 {{define "main"}}
-<div class='snippet'>
-  <div class='metadata'>
-    <strong>{{.Snippet.Title}}</strong>
-    <span>#{{.Snippet.ID}}</span>
+  {{with .Snippet}}
+  <div class='snippet'>
+    <div class='metadata'>
+      <strong>{{.Title}}</strong>
+      <span>#{{.ID}}</span>
+    </div>
+    <pre><code>{{.Content}}</code></pre>
+    <div class='metadata'>
+      <time datetime="{{.Created}}">Created: {{.Created}}</time>
+      <time datetime="{{.Expires}}">Expires: {{.Expires}}</time>
+    </div>
   </div>
-  <pre><code>{{.Snippet.Content}}</code></pre>
-  <div class='metadata'>
-    <time datetime="{{.Snippet.Created}}">Created: {{.Snippet.Created}}</time>
-    <time datetime="{{.Snippet.Expires}}">Expires: {{.Snippet.Expires}}</time>
-  </div>
-</div>
+  {{end}}
 {{end}}
