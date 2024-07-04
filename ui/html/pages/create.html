@@ -1,7 +1,7 @@
 {{define "title"}}Create a New Snippet{{end}}
 
 {{define "main"}}
-<form>
+<form action="/snippet/create" method="POST">
   <div>
     <label for="name">Title</label>
     <input type="text" name="title" placeholder="Enter a title...">
