@@ -7,8 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/ZeroBl21/go-letsgo/internal/models"
+	"github.com/alexedwards/scs/sqlite3store"
+	"github.com/alexedwards/scs/v2"
 
 	"github.com/go-playground/form/v4"
 	_ "github.com/tursodatabase/go-libsql"
@@ -21,7 +24,8 @@ type application struct {
 	snippets      *models.SnippetModel
 	templateCache map[string]*template.Template
 
-	formDecoder *form.Decoder
+	formDecoder    *form.Decoder
+	sessionManager *scs.SessionManager
 }
 
 func main() {
@@ -45,12 +49,17 @@ func main() {
 
 	formDecoder := form.NewDecoder()
 
+	sessionManager := scs.New()
+	sessionManager.Store = sqlite3store.New(db)
+	sessionManager.Lifetime = 12 * time.Hour
+
 	app := &application{
-		errorLog:      errorLog,
-		infoLog:       infoLog,
-		snippets:      &models.SnippetModel{DB: db},
-		templateCache: templateCache,
-		formDecoder:   formDecoder,
+		errorLog:       errorLog,
+		infoLog:        infoLog,
+		snippets:       &models.SnippetModel{DB: db},
+		templateCache:  templateCache,
+		formDecoder:    formDecoder,
+		sessionManager: sessionManager,
 	}
 
 	srv := &http.Server{
