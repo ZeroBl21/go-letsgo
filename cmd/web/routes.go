@@ -12,10 +12,9 @@ func (app *application) routes() http.Handler {
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
 
 	mux.HandleFunc("/{$}", dynamic.ToHandlerFunc(app.home))
-	mux.HandleFunc("/{$}", app.home)
-	mux.HandleFunc("GET /snippet/view/{id}", app.snippetView)
-	mux.HandleFunc("GET /snippet/create", app.snippetCreate)
-	mux.HandleFunc("POST /snippet/create", app.snippetCreatePost)
+	mux.HandleFunc("GET /snippet/view/{id}", dynamic.ToHandlerFunc(app.snippetView))
+	mux.HandleFunc("GET /snippet/create", dynamic.ToHandlerFunc(app.snippetCreate))
+	mux.HandleFunc("POST /snippet/create", dynamic.ToHandlerFunc(app.snippetCreatePost))
 
 	return base(mux)
 }
