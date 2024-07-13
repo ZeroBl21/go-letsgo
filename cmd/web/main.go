@@ -11,11 +11,11 @@ import (
 	"time"
 
 	"github.com/ZeroBl21/go-letsgo/internal/models"
+
 	"github.com/alexedwards/scs/sqlite3store"
 	"github.com/alexedwards/scs/v2"
-
 	"github.com/go-playground/form/v4"
-	_ "github.com/tursodatabase/go-libsql"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type application struct {
@@ -23,6 +23,7 @@ type application struct {
 	infoLog  *log.Logger
 
 	snippets      *models.SnippetModel
+	users         *models.UserModel
 	templateCache map[string]*template.Template
 
 	formDecoder    *form.Decoder
@@ -59,6 +60,7 @@ func main() {
 		errorLog:       errorLog,
 		infoLog:        infoLog,
 		snippets:       &models.SnippetModel{DB: db},
+		users:          &models.UserModel{DB: db},
 		templateCache:  templateCache,
 		formDecoder:    formDecoder,
 		sessionManager: sessionManager,
@@ -86,7 +88,7 @@ func main() {
 
 // Returns a sql.DB connection pool for a given DSN
 func openDB(dsn string) (*sql.DB, error) {
-	db, err := sql.Open("libsql", dsn)
+	db, err := sql.Open("sqlite3", dsn)
 	if err != nil {
 		return nil, err
 	}
