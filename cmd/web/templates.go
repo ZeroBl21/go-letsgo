@@ -9,21 +9,23 @@ import (
 	"github.com/ZeroBl21/go-letsgo/internal/models"
 )
 
-// Holds the structure for any dynamicfor HTML template
+// Holds the structure for any dynamic for HTML template
 type templateData struct {
 	CurrentYear int
 
 	Snippet  *models.Snippet
 	Snippets []*models.Snippet
 
-	Form  any
-	Flash string
+	Form            any
+	Flash           string
+	IsAuthenticated bool
 }
 
 func (app *application) newTemplateData(r *http.Request) *templateData {
 	return &templateData{
-		CurrentYear: time.Now().Year(),
-		Flash:       app.sessionManager.PopString(r.Context(), "flash"),
+		CurrentYear:     time.Now().Year(),
+		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
+		IsAuthenticated: app.isAuthenticated(r),
 	}
 }
 
