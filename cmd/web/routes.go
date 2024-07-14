@@ -7,6 +7,7 @@ func (app *application) routes() http.Handler {
 
 	base := CreateStack(app.recoverPanic, app.logRequest, secureHeader)
 	dynamic := CreateStack(app.sessionManager.LoadAndSave)
+	protected := CreateStack(app.sessionManager.LoadAndSave, app.requireAuthentication)
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
@@ -16,8 +17,10 @@ func (app *application) routes() http.Handler {
 
 	// Snippets
 	mux.HandleFunc("GET /snippet/view/{id}", dynamic.ToHandlerFunc(app.snippetView))
-	mux.HandleFunc("GET /snippet/create", dynamic.ToHandlerFunc(app.snippetCreate))
-	mux.HandleFunc("POST /snippet/create", dynamic.ToHandlerFunc(app.snippetCreatePost))
+
+	// Protected
+	mux.HandleFunc("GET /snippet/create", protected.ToHandlerFunc(app.snippetCreate))
+	mux.HandleFunc("POST /snippet/create", protected.ToHandlerFunc(app.snippetCreatePost))
 
 	// Auth
 	mux.HandleFunc("GET /user/register", dynamic.ToHandlerFunc(app.userRegister))
@@ -26,7 +29,8 @@ func (app *application) routes() http.Handler {
 	mux.HandleFunc("GET /user/login", dynamic.ToHandlerFunc(app.userLogin))
 	mux.HandleFunc("POST /user/login", dynamic.ToHandlerFunc(app.userLoginPost))
 
-	mux.HandleFunc("POST /user/logout", dynamic.ToHandlerFunc(app.userLogoutPost))
+	// Protected
+	mux.HandleFunc("POST /user/logout", protected.ToHandlerFunc(app.userLogoutPost))
 
 	return base(mux)
 }
