@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ZeroBl21/go-letsgo/internal/models"
+	"github.com/justinas/nosurf"
 )
 
 // Holds the structure for any dynamic for HTML template
@@ -19,6 +20,7 @@ type templateData struct {
 	Form            any
 	Flash           string
 	IsAuthenticated bool
+	CSRFToken       string
 }
 
 func (app *application) newTemplateData(r *http.Request) *templateData {
@@ -26,6 +28,7 @@ func (app *application) newTemplateData(r *http.Request) *templateData {
 		CurrentYear:     time.Now().Year(),
 		Flash:           app.sessionManager.PopString(r.Context(), "flash"),
 		IsAuthenticated: app.isAuthenticated(r),
+		CSRFToken:       nosurf.Token(r),
 	}
 }
 
