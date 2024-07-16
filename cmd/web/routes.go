@@ -6,8 +6,8 @@ func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
 
 	base := CreateStack(app.recoverPanic, app.logRequest, secureHeader)
-	dynamic := CreateStack(app.sessionManager.LoadAndSave, noSurf)
-	protected := CreateStack(app.sessionManager.LoadAndSave, app.requireAuthentication, noSurf)
+	dynamic := CreateStack(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
+	protected := CreateStack(dynamic, app.requireAuthentication)
 
 	fileServer := http.FileServer(http.Dir("./ui/static/"))
 	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
