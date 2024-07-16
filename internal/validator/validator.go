@@ -58,8 +58,8 @@ func MinChars(value string, n int) bool {
 	return utf8.RuneCountInString(value) >= n
 }
 
-// PermittedInt() returns true if a value is in a list of permitted integers.
-func PermittedInt(value int, permittedValues ...int) bool {
+// PermittedValue() returns true if a value is in a list of permitted value.
+func PermittedValue[T comparable](value T, permittedValues ...T) bool {
 	for _, v := range permittedValues {
 		if value == v {
 			return true
