@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/ZeroBl21/go-letsgo/ui"
+)
 
 func (app *application) routes() http.Handler {
 	mux := http.NewServeMux()
@@ -9,8 +13,8 @@ func (app *application) routes() http.Handler {
 	dynamic := CreateStack(app.sessionManager.LoadAndSave, noSurf, app.authenticate)
 	protected := CreateStack(dynamic, app.requireAuthentication)
 
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
-	mux.Handle("/static/", http.StripPrefix("/static", fileServer))
+	fileServer := http.FileServer(http.FS(ui.Files))
+	mux.Handle("GET /static/", fileServer)
 
 	// Home
 	mux.HandleFunc("/{$}", dynamic.ToHandlerFunc(app.home))
