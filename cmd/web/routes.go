@@ -16,6 +16,8 @@ func (app *application) routes() http.Handler {
 	fileServer := http.FileServer(http.FS(ui.Files))
 	mux.Handle("GET /static/", fileServer)
 
+	mux.HandleFunc("GET /ping", ping)
+
 	// Home
 	mux.HandleFunc("/{$}", dynamic.ToHandlerFunc(app.home))
 
